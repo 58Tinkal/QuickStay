@@ -5,7 +5,7 @@ import Room from "../models/Room.js";
 import stripe from "stripe";
 
 // Function to Check Availablity of Room
-const checkAvailability = async ({ checkInDate, checkOutDate, room }) => {
+export const checkAvailability = async ({ checkInDate, checkOutDate, room }) => {
 
   try {
     const bookings = await Booking.find({
@@ -19,6 +19,7 @@ const checkAvailability = async ({ checkInDate, checkOutDate, room }) => {
 
   } catch (error) {
     console.error(error.message);
+    return false;
   }
 };
 
@@ -89,7 +90,7 @@ export const createBooking = async (req, res) => {
           <li><strong>Hotel Name:</strong> ${roomData.hotel.name}</li>
           <li><strong>Location:</strong> ${roomData.hotel.address}</li>
           <li><strong>Date:</strong> ${booking.checkInDate.toDateString()}</li>
-          <li><strong>Booking Amount:</strong>  ${process.env.CURRENCY || '$'} ${booking.totalPrice} /night</li>
+          <li><strong>Booking Amount:</strong>  ${process.env.CURRENCY || '₹'} ${booking.totalPrice}</li>
         </ul>
         <p>We look forward to welcoming you!</p>
         <p>If you need to make any changes, feel free to contact us.</p>
@@ -156,7 +157,7 @@ export const stripePayment = async (req, res) => {
     const line_items = [
       {
         price_data: {
-          currency: "usd",
+          currency: "inr",
           product_data: {
             name: roomData.hotel.name,
           },
